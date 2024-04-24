@@ -6,18 +6,18 @@ import 'package:article_app/features/auth/domain/entites/auth.dart';
 import 'package:http/http.dart' as http;
 
 abstract class AuthRemoteDataSource {
-  Future<AuthenticationModel> signup(Authentication newUser);
-  Future<AuthenticationModel> login(Authentication user);
+  Future<AuthenticationEntites> signup(AuthenticationModel newUser);
+  Future<AuthenticationEntites> login(AuthenticationModel user);
 }
 
 class AuthRemoteDataSoureceImpl implements AuthRemoteDataSource {
   final http.Client client;
   String url = 'https://reqres.in/api';
 
-  AuthRemoteDataSoureceImpl({required this.client});
+  AuthRemoteDataSoureceImpl({required this.client, required Object sharedPreferences});
 
   @override
-  Future<AuthenticationModel> signup(Authentication newUser) async {
+  Future<AuthenticationModel> signup(AuthenticationEntites newUser) async {
     final response = await client.post(
       Uri.parse('$url/register'),
       body: newUser,
@@ -34,11 +34,12 @@ class AuthRemoteDataSoureceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<AuthenticationModel> login(Authentication user) async {
+  Future<AuthenticationModel> login(
+      AuthenticationModel authenticationModel) async {
     final response = await client.post(
       Uri.parse('$url/login'),
-      body:
-          user, // Assuming `toJson()` method is implemented in the `AuthenticationModel` class
+      body: jsonEncode(authenticationModel
+          .toJson()), // Assuming `toJson()` method is implemented in the `AuthenticationModel` class
       headers: {
         'Content-Type': 'application/json',
       },

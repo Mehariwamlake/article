@@ -1,8 +1,8 @@
 import 'package:article_app/core/utils/colors.dart';
 import 'package:article_app/features/auth/domain/usecase/auth_usecase.dart';
-import 'package:article_app/features/auth/presentation/bloc/authentication_bloc.dart';
-import 'package:article_app/features/auth/presentation/screen/home_screen.dart';
-import 'package:article_app/features/auth/presentation/screen/login_page.dart';
+import 'package:article_app/features/auth/presentation/bloc/auth_bloc/authentication_bloc.dart';
+import 'package:article_app/features/auth/presentation/bloc/widgets/show_login_component.dart';
+import 'package:article_app/features/auth/presentation/bloc/widgets/show_sign_up_component.dart';
 import 'package:article_app/injection.dart' as di;
 import 'package:article_app/injection.dart';
 
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       create: (_) => AuthenticationBloc(
         loginUseCase: sl<LoginUseCase>(), // Directly call the instance from sl
         signupUseCase:
-            sl<SignupUseCase>(), // Directly call the instance from sl
+            sl<SignupUseCase>(), customClient: sl(), getTokenUsecase: sl(), // Directly call the instance from sl
       ),
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -37,11 +37,11 @@ class MyApp extends StatelessWidget {
             if (state is Authenticated) {
               // Navigate to the home page
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => HomePage(),
+                builder: (context) => SignUpComponent(),
               ));
             }
           },
-          child: const LoginPage(),
+          child: const LoginComponent(),
         ),
       ),
     );

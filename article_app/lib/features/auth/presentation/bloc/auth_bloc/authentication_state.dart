@@ -12,12 +12,12 @@ class AuthenticationInitial extends AuthenticationState {}
 class AuthenticationLoading extends AuthenticationState {}
 
 class Authenticated extends AuthenticationState {
-  final Authentication authentication;
+  final AuthEntity authenticationEntity;
 
-  const Authenticated({required this.authentication});
+  const Authenticated({required this.authenticationEntity});
 
   @override
-  List<Object> get props => [authentication];
+  List<Object> get props => [authenticationEntity];
 }
 
 class AuthenticationFailure extends AuthenticationState {
@@ -27,4 +27,9 @@ class AuthenticationFailure extends AuthenticationState {
 
   @override
   List<Object> get props => [error];
+}
+
+class UserAuthState extends AuthenticationState {
+  final String? token;
+  const UserAuthState(this.token);
 }

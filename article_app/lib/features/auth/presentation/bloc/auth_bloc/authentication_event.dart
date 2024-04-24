@@ -8,7 +8,7 @@ abstract class AuthenticationEvent extends Equatable {
 }
 
 class LoginEvent extends AuthenticationEvent {
-  final Authentication authCredentials;
+  final AuthenticationEntites authCredentials;
 
   const LoginEvent({required this.authCredentials});
 
@@ -17,10 +17,12 @@ class LoginEvent extends AuthenticationEvent {
 }
 
 class SignupEvent extends AuthenticationEvent {
-  final Authentication newAuthCredentials;
+  final AuthenticationEntites newAuthCredentials;
 
   const SignupEvent({required this.newAuthCredentials});
 
   @override
   List<Object> get props => [newAuthCredentials];
 }
+
+class GetTokenEvent extends AuthenticationEvent {}
