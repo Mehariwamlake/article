@@ -1,4 +1,5 @@
 import 'package:article_app/core/network/network_info.dart';
+import 'package:article_app/features/auth/data/data_source/auth_remote.dart';
 import 'package:article_app/features/auth/data/repository/auth_repo.dart';
 import 'package:article_app/features/auth/domain/repository/auth_repository.dart';
 import 'package:article_app/features/auth/domain/usecase/auth_usecase.dart';
@@ -28,5 +29,13 @@ Future<void> inti() async {
 
   sl.registerLazySingleton<AuthenticationRepository>(() =>
       AuthenticationRepositoryImpl(remoteDataSource: sl(), networkInfo: sl()));
+
+  sl.registerLazySingleton<AuthRemoteDataSource>(
+      () => AuthRemoteDataSoureceImpl(client: sl()));
 // user remote
+
+// non constants
+  final sharedPreferences = await SharedPreferences.getInstance();
+  sl.registerLazySingleton(() => sharedPreferences);
+  sl.registerLazySingleton(() => http.Client());
 }
