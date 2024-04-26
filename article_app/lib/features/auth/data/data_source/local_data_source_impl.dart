@@ -1,9 +1,10 @@
 import 'dart:convert';
 
+import 'package:article_app/core/errors/exceptions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/constants/constants.dart';
-import '../../../../core/errors/exception.dart';
+import '../models/authenticated_user_info_model.dart';
 import 'local_data_source.dart';
 
 class AuthLocalDataSourceImpl extends AuthLocalDataSource {
@@ -11,6 +12,26 @@ class AuthLocalDataSourceImpl extends AuthLocalDataSource {
   AuthLocalDataSourceImpl({
     required this.sharedPreferences,
   });
+
+  @override
+  Future<void> cacheLoggedInUser(AuthenticatedUserInfoModel userToCache) async {
+    final userInfo = jsonEncode(userToCache.toJson());
+
+    sharedPreferences.setString(
+        LocalStorageConstants.AUTHENTICATED_USER_INFO, userInfo);
+  }
+
+  @override
+  Future<AuthenticatedUserInfoModel> getLoggedInUser() {
+    final userInfo = sharedPreferences
+        .getString(LocalStorageConstants.AUTHENTICATED_USER_INFO);
+    if (userInfo != null) {
+      return Future.value(
+          AuthenticatedUserInfoModel.fromJson(jsonDecode(userInfo)));
+    } else {
+      throw CacheException(message: 'User info not found');
+    }
+  }
 
   @override
   Future<void> cacheToken(String token) async {
@@ -28,7 +49,7 @@ class AuthLocalDataSourceImpl extends AuthLocalDataSource {
     if (token != null) {
       return Future.value(token);
     } else {
-      throw const CacheException(message: 'Token not found');
+      throw CacheException(message: 'Token not found');
     }
   }
 
@@ -36,17 +57,5 @@ class AuthLocalDataSourceImpl extends AuthLocalDataSource {
   Future<void> deleteLoggedInUser() async {
     sharedPreferences.remove(LocalStorageConstants.AUTHENTICATED_USER_INFO);
     sharedPreferences.remove(LocalStorageConstants.TOKEN);
-  }
-
-  @override
-  Future<void> cacheLoggedInUser(userToCache) {
-    // TODO: implement cacheLoggedInUser
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<dynamic> getLoggedInUser() {
-    // TODO: implement getLoggedInUser
-    throw UnimplementedError();
   }
 }

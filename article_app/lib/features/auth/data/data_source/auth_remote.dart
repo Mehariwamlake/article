@@ -1,55 +1,74 @@
 import 'dart:convert';
 
 import 'package:article_app/core/errors/exceptions.dart';
-import 'package:article_app/features/auth/data/models/auth_model.dart';
-import 'package:article_app/features/auth/domain/entites/auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
-abstract class AuthRemoteDataSource {
-  Future<AuthenticationEntites> signup(AuthenticationModel newUser);
-  Future<AuthenticationEntites> login(AuthenticationModel user);
-}
+import '../../../../core/constants/constants.dart';
+import '../models/authenticated_user_info_model.dart';
+import '../models/authentication_model.dart';
+import '../models/login_model.dart';
+import '../models/sign_up_model.dart';
+import 'remote_data_source.dart';
 
-class AuthRemoteDataSoureceImpl implements AuthRemoteDataSource {
+class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
   final http.Client client;
-  String url = 'https://reqres.in/api';
-
-  AuthRemoteDataSoureceImpl({required this.client, required Object sharedPreferences});
+  AuthRemoteDataSourceImpl({
+    required this.client,
+  });
 
   @override
-  Future<AuthenticationModel> signup(AuthenticationEntites newUser) async {
-    final response = await client.post(
-      Uri.parse('$url/register'),
-      body: newUser,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    );
+  Future<AuthenticationModel> login(LoginRequestModel loginRequestModel) async {
+    final http.Response response = await client.post(
+        Uri.parse('https://reqres.in/api/login'),
+        body: jsonEncode(loginRequestModel.toJson()),
+        headers: {'Content-Type': 'application/json'});
+
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return AuthenticationModel.fromJson(data);
+      final responseBody = jsonDecode(response.body);
+      if (kDebugMode) {
+        print('responseBody: $responseBody');
+      }
+      return AuthenticationModel.fromJson(responseBody);
+    } else if (response.statusCode == 400) {
+      throw const LoginException(message: 'Invalid Credentials');
     } else {
-      throw ServerException('Failed to signup');
+      throw ServerException(message: 'Server Error');
     }
   }
 
   @override
-  Future<AuthenticationModel> login(
-      AuthenticationModel authenticationModel) async {
-    final response = await client.post(
-      Uri.parse('$url/login'),
-      body: jsonEncode(authenticationModel
-          .toJson()), // Assuming `toJson()` method is implemented in the `AuthenticationModel` class
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    );
+  Future<AuthenticatedUserInfoModel> signUp(
+      SignUpRequestModel signUpRequestModel) async {
+    final http.Response response = await client.post(
+        Uri.parse('${apiBaseUrl}user'),
+        body: jsonEncode(signUpRequestModel.toJson()),
+        headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return AuthenticationModel.fromJson(data);
+      final responseBody = jsonDecode(response.body);
+      return AuthenticatedUserInfoModel.fromJson(responseBody['data']);
+    } else if (response.statusCode == 409 || response.statusCode == 400) {
+      throw const SignUpException(message: 'Invalid information');
     } else {
-      throw ServerException(
-          'Failed to login'); // Update the error message if desired
+      throw ServerException(message: 'Server Error');
+    }
+  }
+
+  @override
+  Future<void> logout(String token) async {
+    final http.Response response = await client.post(
+        Uri.parse('${apiBaseUrl}user/logout'),
+        body: jsonEncode({'token': token}),
+        headers: {'Content-Type': 'application/json'});
+
+    if (response.statusCode == 200) {
+      return;
+    } else if (response.statusCode == 401) {
+      throw const LogoutException(
+        message: 'Unauthorized',
+      );
+    } else {
+      throw ServerException();
     }
   }
 }

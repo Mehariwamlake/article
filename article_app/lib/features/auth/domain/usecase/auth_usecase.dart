@@ -1,34 +1,51 @@
 import 'package:article_app/core/errors/failures.dart';
 import 'package:article_app/core/usecases/usecase.dart';
-import 'package:article_app/features/auth/domain/entites/auth.dart';
-import 'package:article_app/features/auth/domain/entites/auth_entity.dart';
+import 'package:article_app/features/auth/domain/entites/authenticated_user_info.dart';
+import 'package:article_app/features/auth/domain/entites/authentication_entity.dart';
+import 'package:article_app/features/auth/domain/entites/login_entity.dart';
+import 'package:article_app/features/auth/domain/entites/sign_up_entity.dart';
 import 'package:article_app/features/auth/domain/repository/auth_repository.dart';
 import 'package:dartz/dartz.dart';
 
-class LoginUseCase implements UseCase<AuthEntity, AuthenticationEntites> {
-  final AuthenticationRepository repository;
-  LoginUseCase(this.repository);
+
+
+abstract class UseCase<Type, Params> {
+  Future<Either<Failure, Type>> call(Params params);
+}
+
+class LoginUseCase extends UseCase<AuthenticationEntity, LoginRequestEntity> {
+  final AuthRepository authRepository;
+  LoginUseCase({required this.authRepository});
   @override
-  Future<Either<Failure, AuthEntity>> call(
-      AuthenticationEntites payload) async {
-    return await repository.login(payload);
+  Future<Either<Failure, AuthenticationEntity>> call(
+      LoginRequestEntity params) async {
+    return await authRepository.login(params);
   }
 }
 
-class SignupUseCase implements UseCase<AuthEntity, AuthenticationEntites> {
-  final AuthenticationRepository repository;
-  SignupUseCase(this.repository);
-  @override
-  Future<Either<Failure, AuthEntity>> call(
-      AuthenticationEntites payload) async {
-    return await repository.signup(payload);
-  }
+class SignUpUseCase extends UseCase<AuthenticatedUserInfo, SignUpEntity> {
+  final AuthRepository authRepository;
 
-  
+  SignUpUseCase({required this.authRepository});
+
+  @override
+  Future<Either<Failure, AuthenticatedUserInfo>> call(
+      SignUpEntity params) async {
+    return await authRepository.signUp(params);
+  }
+}
+
+class LogoutUseCase extends UseCase<void, String> {
+  final AuthRepository authRepository;
+  LogoutUseCase({required this.authRepository});
+  @override
+  Future<Either<Failure, void>> call(String params) async {
+    return await authRepository.logout(params);
+  }
 }
 
 class GetTokenUseCase extends UseCase<void, NoParams> {
-  final AuthenticationRepository authRepository;
+  final AuthRepository authRepository;
 
   GetTokenUseCase({required this.authRepository});
   @override

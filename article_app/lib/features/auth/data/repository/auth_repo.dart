@@ -1,55 +1,31 @@
+import 'package:article_app/core/errors/exception.dart';
 import 'package:article_app/core/errors/exceptions.dart';
 import 'package:article_app/core/errors/failures.dart';
-import 'package:article_app/core/network/network_info.dart';
-import 'package:article_app/features/auth/data/data_source/auth_remote.dart';
 import 'package:article_app/features/auth/data/data_source/local_data_source.dart';
-import 'package:article_app/features/auth/data/models/auth_model.dart';
-import 'package:article_app/features/auth/domain/entites/auth.dart';
-import 'package:article_app/features/auth/domain/entites/auth_entity.dart';
+import 'package:article_app/features/auth/data/data_source/remote_data_source.dart';
+import 'package:article_app/features/auth/domain/entites/authenticated_user_info.dart';
+import 'package:article_app/features/auth/domain/entites/authentication_entity.dart';
+import 'package:article_app/features/auth/domain/entites/login_entity.dart';
+import 'package:article_app/features/auth/domain/entites/sign_up_entity.dart';
 import 'package:article_app/features/auth/domain/repository/auth_repository.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
-class AuthenticationRepositoryImpl implements AuthenticationRepository {
-  final AuthRemoteDataSource remoteDataSource;
+import '../../../../core/network/network_info.dart';
+
+import '../models/authenticated_user_info_model.dart';
+import '../models/login_model.dart';
+import '../models/sign_up_model.dart';
+
+class AuthRepositoryImpl implements AuthRepository {
   final AuthLocalDataSource authLocalDataSource;
-
+  final AuthRemoteDataSource authRemoteDataSource;
   final NetworkInfo networkInfo;
 
-  AuthenticationRepositoryImpl(
-    this.authLocalDataSource, {
-    required this.remoteDataSource,
-    required this.networkInfo,
-  });
-
-  @override
-  Future<Either<Failure, AuthEntity>> login(
-      AuthenticationEntites loginEntity) async {
-    try {
-      final AuthenticationModel authenticationModel = AuthenticationModel(
-        password: loginEntity.password,
-        userName: loginEntity.userName,
-      );
-      final response = await remoteDataSource.login(authenticationModel);
-      return Right(response as AuthEntity);
-    } on ServerException {
-      return Left(ServerFailure("Internal Server Error."));
-    }
-  }
-
-  @override
-  Future<Either<Failure, AuthEntity>> signup(
-      AuthenticationEntites signupEntity) async {
-    // TODO: implement signup
-    try {
-      final AuthenticationModel authenticationModel = AuthenticationModel(
-          password: signupEntity.password, userName: signupEntity.userName);
-      final response = await remoteDataSource.signup(authenticationModel);
-      return Right(response as AuthEntity);
-    } on ServerException {
-      return Left(ServerFailure("Internal Server Error."));
-    }
-  }
+  AuthRepositoryImpl(
+      {required this.authLocalDataSource,
+      required this.authRemoteDataSource,
+      required this.networkInfo});
 
   @override
   Future<Either<Failure, String>> getToken() async {
@@ -59,7 +35,94 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
     } on CacheException catch (e) {
       // print the error message for debugging
       debugPrint(e.toString());
-      return Left(CacheFailure('error'));
+      return Left(CacheFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, AuthenticationEntity>> login(
+      LoginRequestEntity loginRequestEntity) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final LoginRequestModel loginRequestModel = LoginRequestModel(
+            email: loginRequestEntity.email,
+            password: loginRequestEntity.password);
+        final authenticationEntity =
+            await authRemoteDataSource.login(loginRequestModel);
+        final AuthenticatedUserInfo authenticatedUserInfo =
+            authenticationEntity.authenticatedUserInfo;
+        final AuthenticatedUserInfoModel authenticatedUserInfoModel =
+            AuthenticatedUserInfoModel(
+          fullName: authenticatedUserInfo.fullName,
+          email: authenticatedUserInfo.email,
+          expertise: authenticatedUserInfo.expertise,
+          bio: authenticatedUserInfo.bio,
+          image: authenticatedUserInfo.image,
+          imageCloudinaryPublicId:
+              authenticatedUserInfo.imageCloudinaryPublicId,
+        );
+
+        await authLocalDataSource.cacheLoggedInUser(authenticatedUserInfoModel);
+        await authLocalDataSource.cacheToken(authenticationEntity.token);
+
+        return Right(authenticationEntity);
+      } on ServerException catch (e) {
+        // print the error message for debugging
+        debugPrint(e.toString());
+        return Left(ServerFailure());
+      } on LoginException catch (e) {
+        // print the error message for debugging
+        debugPrint(e.toString());
+
+        return Left(LoginFailure());
+      }
+    } else {
+      return Left(NetworkFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, AuthenticatedUserInfo>> signUp(
+      SignUpEntity signUpEntity) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final SignUpRequestModel signUpRequestModel = SignUpRequestModel(
+            email: signUpEntity.email,
+            password: signUpEntity.password,
+            fullName: signUpEntity.fullName,
+            expertise: signUpEntity.expertise,
+            bio: signUpEntity.bio);
+        final authenticatedUserInfo =
+            await authRemoteDataSource.signUp(signUpRequestModel);
+        return Right(authenticatedUserInfo);
+      } on ServerException catch (e) {
+        // print the error message for debugging
+        debugPrint(e.toString());
+        return Left(ServerFailure());
+      } on SignUpException catch (e) {
+        // print the error message for debugging
+        debugPrint(e.toString());
+        return Left(SignUpFailure());
+      }
+    } else {
+      return Left(NetworkFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> logout(String token) async {
+    try {
+      await authLocalDataSource.removeToken();
+      await authLocalDataSource.deleteLoggedInUser();
+      return const Right(null);
+    } on ServerException catch (e) {
+      // print the error message for debugging
+      debugPrint(e.toString());
+      return Left(ServerFailure());
+    } on LogoutException catch (e) {
+      // print the error message for debugging
+      debugPrint(e.toString());
+      return Left(LogoutFailure());
     }
   }
 }
