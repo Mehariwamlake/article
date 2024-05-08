@@ -20,7 +20,7 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
   @override
   Future<AuthenticationModel> login(LoginRequestModel loginRequestModel) async {
     final http.Response response = await client.post(
-        Uri.parse('https://reqres.in/api/login'),
+        Uri.parse('https://mock.apidog.com/m1/524680-485106-default/login'),
         body: jsonEncode(loginRequestModel.toJson()),
         headers: {'Content-Type': 'application/json'});
 
@@ -57,8 +57,9 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
   @override
   Future<void> logout(String token) async {
     final http.Response response = await client.post(
-        Uri.parse('${apiBaseUrl}user/logout'),
-        body: jsonEncode({'token': token}),
+        Uri.parse(
+            'https://mock.apidog.com/m1/524680-485106-default/user/logout'),
+        body: jsonEncode({"token": token}),
         headers: {'Content-Type': 'application/json'});
 
     if (response.statusCode == 200) {

@@ -1,11 +1,10 @@
+import 'package:article_app/core/presentation/theme/app_colors.dart';
+import 'package:article_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:article_app/features/auth/presentation/widgets/show_login_component.dart';
+import 'package:article_app/features/auth/presentation/widgets/show_sign_up_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../../core/presentation/theme/app_colors.dart';
-import '../bloc/auth_bloc.dart';
-import '../widgets/show_login_component.dart';
-import '../widgets/show_sign_up_component.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -133,8 +132,7 @@ class _AuthPageState extends State<AuthPage> {
                             ),
                             child: _isLogin
                                 ? const LoginComponent()
-                                : SignUpComponent(
-                                    toggleLoginMode: toggleLoginMode),
+                                : SignUpComponent(),
                           ),
                         )
                       ]),

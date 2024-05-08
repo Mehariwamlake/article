@@ -1,5 +1,5 @@
 /// API Url
-const apiBaseUrl = 'https://blog-api-4z3m.onrender.com/api/v1/';
+const apiBaseUrl = 'https://mock.apidog.com/m1/524680-485106-default/';
 
 // constants for SharedPreferences
 class LocalStorageConstants {

@@ -1,17 +1,16 @@
+import 'package:article_app/core/presentation/router/routes.dart';
 import 'package:article_app/features/auth/domain/entites/login_entity.dart';
+import 'package:article_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:article_app/features/auth/presentation/widgets/custom_password_text_form_field.dart';
+import 'package:article_app/features/auth/presentation/widgets/custom_text_field.dart';
+import 'package:article_app/features/auth/presentation/widgets/elevated_button_style.dart';
+import 'package:article_app/features/auth/presentation/widgets/elevated_button_text.dart';
+import 'package:article_app/features/auth/presentation/widgets/forgot_password.dart';
+import 'package:article_app/features/auth/presentation/widgets/show_welcome_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../core/presentation/router/routes.dart';
-import '../bloc/auth_bloc.dart';
-import 'custom_text_field.dart';
-import 'custom_password_text_form_field.dart';
-import 'elevated_button_style.dart';
-import 'elevated_button_text.dart';
-import 'forgot_password.dart';
-import 'show_welcome_message.dart';
 
 class LoginComponent extends StatefulWidget {
   const LoginComponent({super.key});

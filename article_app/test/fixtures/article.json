@@ -1,12 +1,69 @@
 {
-    "id": "1",
-    "title": "Article 1",
-    "subtitle": "article 1",
-    "description": "This is article 1",
-    "postedBy": "user121",
-    "publishedDate": "2023-05-11T16:00:00",
-    "tag": "Art",
-    "imageUrl": "https://www.google.com/url?sa=i&url",
-    "likeCount": 213,
-    "timeEstimate": 30
+    "articles": [
+        {
+            "id": "1",
+            "title": "The Importance of Regular Exercise",
+            "subtitle": "Why You Should Make Exercise a Habit",
+            "content": "Regular exercise has a number of health benefits, including improved cardiovascular health, stronger muscles and bones, and better mental health. Whether you prefer running, weightlifting, or yoga, making exercise a regular part of your routine can help you feel better and live a longer, healthier life.",
+            "date": "2022-01-01T00:00:00Z",
+            "likesCount": 100,
+            "tags": [
+                "health",
+                "fitness",
+                "exercise"
+            ]
+        },
+        {
+            "id": "2",
+            "title": "The Benefits of Meditation",
+            "subtitle": "How Meditation Can Improve Your Life",
+            "content": "Meditation has been shown to reduce stress, improve focus and concentration, and even lower blood pressure. Whether you're a beginner or an experienced meditator, taking a few minutes each day to meditate can help you feel more calm and centered.",
+            "date": "2022-01-02T00:00:00Z",
+            "likesCount": 50,
+            "tags": [
+                "meditation",
+                "mindfulness",
+                "wellness"
+            ]
+        },
+        {
+            "id": "3",
+            "title": "The Benefits of Traveling",
+            "subtitle": "Why You Should Travel More",
+            "content": "Traveling allows you to experience new cultures, meet new people, and see the world from a different perspective. Whether you're backpacking through Europe or taking a luxury cruise, traveling can broaden your horizons and help you create memories that will last a lifetime.",
+            "date": "2022-01-03T00:00:00Z",
+            "likesCount": 75,
+            "tags": [
+                "travel",
+                "adventure",
+                "culture"
+            ]
+        },
+        {
+            "id": "4",
+            "title": "The Benefits of Reading",
+            "subtitle": "Why You Should Read Every Day",
+            "content": "Reading can improve your vocabulary, increase your knowledge, and even boost your empathy and emotional intelligence. Whether you prefer fiction or nonfiction, taking time each day to read can have a number of benefits for your mental health and overall well-being.",
+            "date": "2022-01-04T00:00:00Z",
+            "likesCount": 120,
+            "tags": [
+                "reading",
+                "books",
+                "education"
+            ]
+        },
+        {
+            "id": "5",
+            "title": "The Importance of Sleep",
+            "subtitle": "Why You Need to Get Enough Sleep",
+            "content": "Getting enough sleep is essential for overall health and well-being. Lack of sleep can lead to a range of problems, including fatigue, irritability, and even depression. To ensure that you're getting enough rest, try to establish a regular sleep schedule and create a relaxing bedtime routine.",
+            "date": "2022-01-05T00:00:00Z",
+            "likesCount": 90,
+            "tags": [
+                "sleep",
+                "health",
+                "wellness"
+            ]
+        }
+    ]
 }

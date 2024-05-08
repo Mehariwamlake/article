@@ -1,4 +1,3 @@
-import 'package:article_app/core/errors/exception.dart';
 import 'package:article_app/core/errors/exceptions.dart';
 import 'package:article_app/core/errors/failures.dart';
 import 'package:article_app/features/auth/data/data_source/local_data_source.dart';
@@ -49,20 +48,7 @@ class AuthRepositoryImpl implements AuthRepository {
             password: loginRequestEntity.password);
         final authenticationEntity =
             await authRemoteDataSource.login(loginRequestModel);
-        final AuthenticatedUserInfo authenticatedUserInfo =
-            authenticationEntity.authenticatedUserInfo;
-        final AuthenticatedUserInfoModel authenticatedUserInfoModel =
-            AuthenticatedUserInfoModel(
-          fullName: authenticatedUserInfo.fullName,
-          email: authenticatedUserInfo.email,
-          expertise: authenticatedUserInfo.expertise,
-          bio: authenticatedUserInfo.bio,
-          image: authenticatedUserInfo.image,
-          imageCloudinaryPublicId:
-              authenticatedUserInfo.imageCloudinaryPublicId,
-        );
 
-        await authLocalDataSource.cacheLoggedInUser(authenticatedUserInfoModel);
         await authLocalDataSource.cacheToken(authenticationEntity.token);
 
         return Right(authenticationEntity);

@@ -1,5 +1,13 @@
 import 'package:article_app/core/network/custom_client.dart';
 import 'package:article_app/core/network/network_info.dart';
+import 'package:article_app/features/article/data/datasources/article_remote_data_source.dart';
+import 'package:article_app/features/article/data/repositories/article_repository_impl.dart';
+import 'package:article_app/features/article/domain/repositories/article_repository.dart';
+import 'package:article_app/features/article/domain/usecases/get_all_articles.dart';
+import 'package:article_app/features/article/domain/usecases/get_article_by_id.dart';
+import 'package:article_app/features/article/presentation/Article_bloc/article_bloc.dart';
+import 'package:article_app/features/article/presentation/Feed_bloc/feed_bloc.dart';
+
 import 'package:article_app/features/auth/data/data_source/auth_remote.dart';
 import 'package:article_app/features/auth/data/data_source/local_data_source.dart';
 import 'package:article_app/features/auth/data/data_source/local_data_source_impl.dart';
@@ -8,6 +16,12 @@ import 'package:article_app/features/auth/data/repository/auth_repo.dart';
 import 'package:article_app/features/auth/domain/repository/auth_repository.dart';
 import 'package:article_app/features/auth/domain/usecase/auth_usecase.dart';
 import 'package:article_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:article_app/features/user/data/data_source/user_local.dart';
+import 'package:article_app/features/user/data/data_source/user_remote.dart';
+import 'package:article_app/features/user/data/repository/user_repo.dart';
+import 'package:article_app/features/user/domain/repository/user_repository.dart';
+import 'package:article_app/features/user/domain/user_usecase.dart';
+import 'package:article_app/features/user/presentation/bloc/user_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -16,10 +30,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 final serviceLocator = GetIt.instance;
 
 Future<void> init() async {
-  serviceLocator.registerLazySingleton(
-    () => GetTokenUseCase(authRepository: serviceLocator()),
-  );
-
   // Core
   serviceLocator.registerLazySingleton<NetworkInfo>(
       () => NetworkInfoImpl(serviceLocator()));
@@ -32,24 +42,58 @@ Future<void> init() async {
 
   // Repository
 
+  serviceLocator.registerLazySingleton<UserRepository>(
+    () => UserRespositoryImpl(
+      networkInfo: serviceLocator(),
+      remoteDataSource: serviceLocator(),
+      localDataSource: serviceLocator(),
+    ),
+  );
+
   // Data sources
+
+  serviceLocator.registerLazySingleton<UserLocalDataSource>(
+    () => UserLocalDataSourceImpl(sharedPreferences: serviceLocator()),
+  );
+  serviceLocator.registerLazySingleton<UserRemoteDataSource>(
+    () => UserRemoteDataSourceImpl(client: serviceLocator()),
+  );
 
   // Feature-Authentication
   //! Bloc
+
+  serviceLocator
+      .registerFactory(() => ArticleBloc(getArticle: serviceLocator()));
+
+  serviceLocator
+      .registerFactory(() => FeedBloc(getAllArticles: serviceLocator()));
+
   serviceLocator.registerFactory(
     () => AuthBloc(
       getTokenUsecase: serviceLocator(),
       loginUseCase: serviceLocator(),
       signUpUseCase: serviceLocator(),
       customClient: serviceLocator(),
+      logoutUseCase: serviceLocator(),
     ),
   );
+
+  serviceLocator.registerFactory(() => UserBloc(
+        getUser: serviceLocator(),
+      ));
 
   //! Use cases
   serviceLocator.registerLazySingleton(
     () => LoginUseCase(
       authRepository: serviceLocator(),
     ),
+  );
+
+  serviceLocator.registerLazySingleton(() => GetAllArticles(serviceLocator()));
+  serviceLocator.registerLazySingleton(() => GetArticleById(serviceLocator()));
+
+  serviceLocator.registerLazySingleton(
+    () => GetUserData(serviceLocator()),
   );
 
   serviceLocator.registerLazySingleton(
@@ -64,7 +108,14 @@ Future<void> init() async {
     ),
   );
 
+  serviceLocator.registerLazySingleton(
+    () => GetTokenUseCase(authRepository: serviceLocator()),
+  );
+
   //! Repository
+
+  serviceLocator.registerLazySingleton<ArticleRepository>(
+      () => ArticleRepositoryImpl(remoteDataSource: serviceLocator()));
   serviceLocator.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
       authRemoteDataSource: serviceLocator(),
@@ -74,6 +125,10 @@ Future<void> init() async {
   );
 
   //! Data sources
+
+  serviceLocator.registerLazySingleton<ArticleRemoteDataSource>(
+      () => ArticleRemoteDataSourceImpl(client: serviceLocator()));
+
   serviceLocator.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(
       client: serviceLocator(),
@@ -87,8 +142,9 @@ Future<void> init() async {
   );
 
   // External
+  serviceLocator.registerLazySingleton(() => http.Client());
+
   final sharedPreferences = await SharedPreferences.getInstance();
   serviceLocator.registerLazySingleton(() => sharedPreferences);
   serviceLocator.registerLazySingleton(() => InternetConnectionChecker());
-  serviceLocator.registerLazySingleton(() => http.Client());
 }

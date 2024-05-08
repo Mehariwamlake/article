@@ -35,6 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignUpUseCase signUpUseCase;
   final GetTokenUseCase getTokenUsecase;
   final CustomClient customClient;
+  final LogoutUseCase logoutUseCase;
 
   String? _token;
 
@@ -45,10 +46,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required this.loginUseCase,
     required this.signUpUseCase,
     required this.customClient,
+    required this.logoutUseCase,
   }) : super(AuthInitial()) {
     on<LoginEvent>(_onLoginEvent);
     on<SignUpEvent>(_onSignUpEvent);
     on<GetTokenEvent>(_onGetTokenEvent);
+    on<LogoutEvent>(_onLogoutEvent);
   }
 
   Future<void> _onGetTokenEvent(
@@ -104,16 +107,35 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
-  
   String _mapErrorToMessage(Failure failure) {
     switch (failure.runtimeType) {
       case ServerFailure:
         return SERVER_FAILURE_MESSAGE;
-      
+
       case CacheFailure:
         return CACHE_FAILURE_MESSAGE;
       default:
         return UNKNOWN_FAILURE_MESSAGE;
     }
+  }
+
+  Future<void> _onLogoutEvent(
+      LogoutEvent event, Emitter<AuthState> emit) async {
+    emit(Loading());
+
+    final failureOrLogoutResult = await logoutUseCase('');
+
+    _token = null;
+
+    failureOrLogoutResult.fold(
+      (failure) {
+        emit(AuthError(message: _mapErrorToMessage(failure)));
+      },
+      (logoutResult) {
+        customClient.authToken = null;
+        _token = null;
+        emit(LogoutSuccessState());
+      },
+    );
   }
 }

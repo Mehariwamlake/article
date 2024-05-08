@@ -1,0 +1,26 @@
+
+
+{
+  "user": [
+    {
+      "id": "1",
+      "fullName": "string",
+      "email": "string",
+      "expertise": "string",
+      "bio": "string",
+      "createdAt": "string",
+      "image": "string",
+      "imageCloudinaryPublicId": "string"
+    },
+    {
+      "id": "2",
+      "fullName": "string",
+      "email": "string",
+      "expertise": "string",
+      "bio": "string",
+      "createdAt": "string",
+      "image": "string",
+      "imageCloudinaryPublicId": "string"
+    }
+  ]
+}

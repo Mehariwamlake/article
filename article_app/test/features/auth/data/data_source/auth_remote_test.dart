@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:article_app/core/errors/exceptions.dart';
 import 'package:article_app/features/auth/data/data_source/auth_remote.dart';
-import 'package:article_app/features/auth/data/models/auth_model.dart';
-import 'package:article_app/features/auth/domain/entites/auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:http/http.dart' as http;

@@ -1,12 +1,13 @@
 name: article_app
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
-  sdk: '>=3.3.3 <4.0.0'
+  sdk: ">=3.3.3 <4.0.0"
 
 dependencies:
+  cached_network_image: ^3.3.1
   connectivity: ^3.0.6
   dartz: ^0.10.1
   dio: ^5.4.2+1
@@ -20,7 +21,9 @@ dependencies:
   go_router: ^13.2.5
   google_fonts: ^6.2.1
   http: ^1.2.1
+  image_picker: ^1.1.1
   internet_connection_checker: ^1.0.0+1
+  meta: ^1.11.0
   retrofit: ^4.1.0
   rxdart: ^0.27.7
   shared_preferences: ^2.2.3
@@ -41,6 +44,7 @@ flutter:
   assets:
     - assets/images/
     - assets/svg/
+    - assets/images/card_image.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -54,91 +58,12 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
+    - family: MenuAltRight
+      fonts:
+        - asset: assets/fonts/MenuAltRight.ttf
     - family: Poppins
       fonts:
-        - asset: assets/fonts/poppins/Poppins-ExtraLight.ttf
-          weight: 200
-        - asset: assets/fonts/poppins/Poppins-Light.ttf
-          weight: 300
-        - asset: assets/fonts/poppins/Poppins-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/poppins/Poppins-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/poppins/Poppins-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/poppins/Poppins-Bold.ttf
-          weight: 700
-
-    - family: UrbanistThin
+        - asset: assets/fonts/Poppins-Regular.ttf
+    - family: Urbanist
       fonts:
-        - asset: assets/fonts/poppins/Poppins-ExtraLight.ttf
-          weight: 200
-        - asset: assets/fonts/poppins/Poppins-Light.ttf
-          weight: 300
-        - asset: assets/fonts/poppins/Poppins-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/poppins/Poppins-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/poppins/Poppins-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/poppins/Poppins-Bold.ttf
-          weight: 700
-
-    - family: UrbanistThin
-      fonts:
-        - asset: assets/fonts/urbanist/Urbanist-Thin.ttf
-
-    - family: UrbanistItalicThin
-      fonts:
-        - asset: assets/fonts/urbanist/Urbanist-ThinItalic.ttf
-
-    - family: UrbanistLight
-      fonts:
-        - asset: assets/fonts/urbanist/Urbanist-Light.ttf
-
-    - family: UrbanistRegular
-      fonts:
-        - asset: assets/fonts/urbanist/Urbanist-Regular.ttf
-
-    - family: UrbanistMedium
-      fonts:
-        - asset: assets/fonts/urbanist/Urbanist-Medium.ttf
-
-    - family: UrbanistSemiBold
-      fonts:
-        - asset: assets/fonts/urbanist/Urbanist-SemiBold.ttf
-
-    - family: UrbanistBold
-      fonts:
-        - asset: assets/fonts/urbanist/Urbanist-Bold.ttf
-
-    # - family: PoppinsThin
-    #   fonts:
-    #     - asset: assets/fonts/poppins/Poppins-Thin.ttf
-
-    # - family: PoppinsLight
-    #   fonts:
-    #     - asset: assets/fonts/poppins/Poppins-Light.ttf
-
-    # - family: PoppinsRegular
-    #   fonts:
-    #     - asset: assets/fonts/poppins/Poppins-Regular.ttf
-
-    # - family: PoppinsMedium
-    #   fonts:
-    #     - asset: assets/fonts/poppins/Poppins-Medium.ttf
-
-    # - family: PoppinsSemiBold
-    #   fonts:
-    #     - asset: assets/fonts/poppins/Poppins-SemiBold.ttf
-
-    # - family: PoppinsBold
-    #   fonts:
-    #     - asset: assets/fonts/poppins/Poppins-Bold.ttf
-
-    - family: PoppinsBlack
-      fonts:
-        - asset: assets/fonts/poppins/Poppins-Black.ttf
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
+        - asset: assets/fonts/Urbanist-Regular.ttf

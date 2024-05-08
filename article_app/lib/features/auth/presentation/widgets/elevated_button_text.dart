@@ -6,7 +6,7 @@ import '../../../../core/presentation/theme/app_colors.dart';
 class ElevatedButtonText extends StatelessWidget {
   const ElevatedButtonText({
     super.key,
-    this.text = 'SIGN UP',
+    this.text = 'SIGN UP', required Future<Object?> Function() onTap,
   });
 
   final String text;
