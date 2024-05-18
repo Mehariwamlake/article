@@ -5,6 +5,7 @@ import 'package:article_app/features/article/data/repositories/article_repositor
 import 'package:article_app/features/article/domain/repositories/article_repository.dart';
 import 'package:article_app/features/article/domain/usecases/get_all_articles.dart';
 import 'package:article_app/features/article/domain/usecases/get_article_by_id.dart';
+import 'package:article_app/features/article/domain/usecases/post_article.dart';
 import 'package:article_app/features/article/presentation/Article_bloc/article_bloc.dart';
 import 'package:article_app/features/article/presentation/Feed_bloc/feed_bloc.dart';
 
@@ -16,11 +17,11 @@ import 'package:article_app/features/auth/data/repository/auth_repo.dart';
 import 'package:article_app/features/auth/domain/repository/auth_repository.dart';
 import 'package:article_app/features/auth/domain/usecase/auth_usecase.dart';
 import 'package:article_app/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:article_app/features/user/data/data_source/user_local.dart';
-import 'package:article_app/features/user/data/data_source/user_remote.dart';
-import 'package:article_app/features/user/data/repository/user_repo.dart';
-import 'package:article_app/features/user/domain/repository/user_repository.dart';
-import 'package:article_app/features/user/domain/user_usecase.dart';
+import 'package:article_app/features/user/data/datasources/user_local_data_source.dart';
+import 'package:article_app/features/user/data/datasources/user_remote_data_source.dart';
+import 'package:article_app/features/user/data/repositories/user_repository_imp.dart';
+import 'package:article_app/features/user/domain/repositories/user_repository.dart';
+
 import 'package:article_app/features/user/presentation/bloc/user_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
@@ -43,18 +44,13 @@ Future<void> init() async {
   // Repository
 
   serviceLocator.registerLazySingleton<UserRepository>(
-    () => UserRespositoryImpl(
-      networkInfo: serviceLocator(),
+    () => UserRepositoryImpl(
       remoteDataSource: serviceLocator(),
-      localDataSource: serviceLocator(),
     ),
   );
 
   // Data sources
 
-  serviceLocator.registerLazySingleton<UserLocalDataSource>(
-    () => UserLocalDataSourceImpl(sharedPreferences: serviceLocator()),
-  );
   serviceLocator.registerLazySingleton<UserRemoteDataSource>(
     () => UserRemoteDataSourceImpl(client: serviceLocator()),
   );
@@ -62,8 +58,8 @@ Future<void> init() async {
   // Feature-Authentication
   //! Bloc
 
-  serviceLocator
-      .registerFactory(() => ArticleBloc(getArticle: serviceLocator()));
+  serviceLocator.registerFactory(() =>
+      ArticleBloc(getArticle: serviceLocator(), postArticle: serviceLocator()));
 
   serviceLocator
       .registerFactory(() => FeedBloc(getAllArticles: serviceLocator()));
@@ -80,6 +76,10 @@ Future<void> init() async {
 
   serviceLocator.registerFactory(() => UserBloc(
         getUser: serviceLocator(),
+        addUser: serviceLocator(),
+        getUserById: serviceLocator(),
+        editUserById: serviceLocator(),
+        deleteUserById: serviceLocator(),
       ));
 
   //! Use cases
@@ -91,10 +91,7 @@ Future<void> init() async {
 
   serviceLocator.registerLazySingleton(() => GetAllArticles(serviceLocator()));
   serviceLocator.registerLazySingleton(() => GetArticleById(serviceLocator()));
-
-  serviceLocator.registerLazySingleton(
-    () => GetUserData(serviceLocator()),
-  );
+  serviceLocator.registerLazySingleton(() => PostArticle(serviceLocator()));
 
   serviceLocator.registerLazySingleton(
     () => SignUpUseCase(

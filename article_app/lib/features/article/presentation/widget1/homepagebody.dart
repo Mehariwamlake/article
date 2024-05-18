@@ -9,7 +9,10 @@ import 'package:flutter/material.dart';
 class HomeBody extends StatelessWidget {
   final List<Article> articles;
 
-  const HomeBody({super.key, required this.articles});
+  const HomeBody({
+    super.key,
+    required this.articles,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +48,7 @@ class HomeBody extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const ArticleFormPage()),
+                          builder: (context) => ArticleFormPage()),
                     );
                   },
                   child: const Icon(

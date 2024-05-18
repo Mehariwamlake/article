@@ -132,7 +132,8 @@ class _AuthPageState extends State<AuthPage> {
                             ),
                             child: _isLogin
                                 ? const LoginComponent()
-                                : SignUpComponent(),
+                                : SignUpComponent(
+                                    toggleLoginMode: toggleLoginMode),
                           ),
                         )
                       ]),

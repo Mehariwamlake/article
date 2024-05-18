@@ -80,24 +80,21 @@ class _LoginComponentState extends State<LoginComponent> {
             children: [
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      LoginRequestEntity loginRequestEntity =
-                          LoginRequestEntity(
-                        email: _usernameController.text,
-                        password: _passwordController.text,
-                      );
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        LoginRequestEntity loginRequestEntity =
+                            LoginRequestEntity(
+                          email: _usernameController.text,
+                          password: _passwordController.text,
+                        );
 
-                      context.read<AuthBloc>().add(LoginEvent(
-                            loginRequestEntity: loginRequestEntity,
-                          ));
-                    }
-                  },
-                  style: elevatedButtonStyle(),
-                  child: const ElevatedButtonText(
-                    text: 'LOGIN',
-                  ),
-                ),
+                        context.read<AuthBloc>().add(LoginEvent(
+                              loginRequestEntity: loginRequestEntity,
+                            ));
+                      }
+                    },
+                    style: elevatedButtonStyle(),
+                    child: Text("Login")),
               ),
             ],
           ),

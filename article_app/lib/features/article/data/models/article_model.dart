@@ -1,11 +1,7 @@
-
 import 'package:article_app/features/article/domain/entities/article.dart';
 
 class ArticleModel extends Article {
-
-
   ArticleModel({
-    
     required String id,
     required String title,
     required String subtitle,

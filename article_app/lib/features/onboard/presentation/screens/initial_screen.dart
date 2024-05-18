@@ -1,4 +1,5 @@
-import 'package:article_app/features/auth/presentation/bloc/auth_bloc/authentication_bloc.dart';
+import 'package:article_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:article_app/features/user/presentation/bloc/user_bloc.dart';
 import 'package:article_app/injection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +18,7 @@ class AppInitialScreen extends StatelessWidget {
       create: (context) => serviceLocator<UserBloc>(),
 
       //
-      child: BlocListener<AuthenticationBloc, AuthenticationState>(
+      child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is UserAuthState) {
             if (state.token != null) {

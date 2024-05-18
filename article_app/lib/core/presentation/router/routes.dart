@@ -1,7 +1,7 @@
 class Routes {
   static const home = '/';
 
-  static const articles = '/articles';
+  static const articles = '/article';
   static const articleDetail = '/article-detail';
   static const createArticle = '/create-article';
   static const editArticle = '/edit-article';

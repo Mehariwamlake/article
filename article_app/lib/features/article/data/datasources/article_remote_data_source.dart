@@ -7,9 +7,9 @@ import 'package:http/http.dart' as http;
 abstract class ArticleRemoteDataSource {
   Future<ArticleModel> getArticleById(String articleId);
 
-  Future<ArticleModel> addArticle(ArticleModel article);
+  Future<ArticleModel> postArticle(ArticleModel article);
 
-  Future<ArticleModel> editArticleById(ArticleModel article);
+  Future<ArticleModel> updateArticle(ArticleModel article);
 
   Future<void> deleteArticleById(String articleId);
 
@@ -54,8 +54,8 @@ class ArticleRemoteDataSourceImpl implements ArticleRemoteDataSource {
   }
 
   @override
-  Future<ArticleModel> addArticle(ArticleModel article) async {
-    final url = Uri.parse("http://blogsapi.com/articles/${article.id}");
+  Future<ArticleModel> postArticle(ArticleModel article) async {
+    final url = Uri.parse("$baseUrl/article/post");
 
     final response = await client.post(
       url,
@@ -82,7 +82,7 @@ class ArticleRemoteDataSourceImpl implements ArticleRemoteDataSource {
   }
 
   @override
-  Future<ArticleModel> editArticleById(ArticleModel article) async {
+  Future<ArticleModel> updateArticle(ArticleModel article) async {
     final url = Uri.parse("http://blogsapi.com/users/${article.id}");
 
     final response = await client.put(

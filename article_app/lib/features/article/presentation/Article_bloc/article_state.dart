@@ -18,7 +18,7 @@ class ArticleLoadingState extends ArticleState {
 class ArticleSuccessState extends ArticleState {
   final Article article;
 
-  ArticleSuccessState({required this.article});
+  const ArticleSuccessState(this.article);
 
   @override
   List<Object> get props => [article];

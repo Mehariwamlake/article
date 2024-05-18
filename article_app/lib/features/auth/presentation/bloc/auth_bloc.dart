@@ -33,9 +33,9 @@ const String UNKNOWN_FAILURE_MESSAGE = 'Unknown error';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginUseCase loginUseCase;
   final SignUpUseCase signUpUseCase;
+  final LogoutUseCase logoutUseCase;
   final GetTokenUseCase getTokenUsecase;
   final CustomClient customClient;
-  final LogoutUseCase logoutUseCase;
 
   String? _token;
 
@@ -45,13 +45,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required this.getTokenUsecase,
     required this.loginUseCase,
     required this.signUpUseCase,
-    required this.customClient,
     required this.logoutUseCase,
+    required this.customClient,
   }) : super(AuthInitial()) {
     on<LoginEvent>(_onLoginEvent);
     on<SignUpEvent>(_onSignUpEvent);
-    on<GetTokenEvent>(_onGetTokenEvent);
     on<LogoutEvent>(_onLogoutEvent);
+    on<GetTokenEvent>(_onGetTokenEvent);
   }
 
   Future<void> _onGetTokenEvent(
@@ -107,18 +107,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
-  String _mapErrorToMessage(Failure failure) {
-    switch (failure.runtimeType) {
-      case ServerFailure:
-        return SERVER_FAILURE_MESSAGE;
-
-      case CacheFailure:
-        return CACHE_FAILURE_MESSAGE;
-      default:
-        return UNKNOWN_FAILURE_MESSAGE;
-    }
-  }
-
   Future<void> _onLogoutEvent(
       LogoutEvent event, Emitter<AuthState> emit) async {
     emit(Loading());
@@ -137,5 +125,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(LogoutSuccessState());
       },
     );
+  }
+
+  String _mapErrorToMessage(Failure failure) {
+    switch (failure.runtimeType) {
+      case ServerFailure:
+        return SERVER_FAILURE_MESSAGE;
+      case LoginFailure:
+        return LOGIN_FAILURE_MESSAGE;
+      case SignUpFailure:
+        return SIGN_UP_FAILURE_MESSAGE;
+      case LogoutFailure:
+        return LOGOUT_FAILURE_MESSAGE;
+      case NetworkFailure:
+        return NETWORK_FAILURE_MESSAGE;
+      case CacheFailure:
+        return CACHE_FAILURE_MESSAGE;
+      default:
+        return UNKNOWN_FAILURE_MESSAGE;
+    }
   }
 }

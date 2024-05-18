@@ -1,21 +1,45 @@
 part of 'user_bloc.dart';
 
-sealed class UserEvent extends Equatable {
-  const UserEvent();
+@immutable
+abstract class UserEvent extends Equatable {
+  const UserEvent() : super();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
-class GetUserEvent extends UserEvent {}
+class AddUserEvent extends UserEvent {
+  final User user;
 
-class UpdateUserPhotoEvent extends UserEvent {
-  final String token;
-  final String imagePath;
+  const AddUserEvent(this.user) : super();
 
-  const UpdateUserPhotoEvent({required this.token, required this.imagePath});
+  @override
+  List<Object?> get props => [user];
 }
 
-class GetBookmarkedArticlesEvent extends UserEvent {
-  const GetBookmarkedArticlesEvent();
+class GetUserEvent extends UserEvent {
+  final String id;
+
+  const GetUserEvent(this.id) : super();
+
+  @override
+  List<Object?> get props => [id];
+}
+
+class EditUserEvent extends UserEvent {
+  final User user;
+
+  const EditUserEvent(this.user) : super();
+
+  @override
+  List<Object?> get props => [user];
+}
+
+class DeleteUserEvent extends UserEvent {
+  final String id;
+
+  const DeleteUserEvent(this.id) : super();
+
+  @override
+  List<Object?> get props => [id];
 }

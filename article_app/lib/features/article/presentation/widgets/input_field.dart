@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class InputField extends StatelessWidget {
-  const InputField({Key? key, required this.labelText}) : super(key: key);
+  InputField({required this.labelText, required this.textEditingController});
   final String labelText;
+  TextEditingController textEditingController;
 
   @override
   Widget build(BuildContext context) {
@@ -11,6 +12,7 @@ class InputField extends StatelessWidget {
     return SizedBox(
       height: screenSize.height * 0.06,
       child: TextField(
+        controller: textEditingController,
         decoration: InputDecoration(
           hintText: labelText,
         ),
