@@ -1,3 +1,5 @@
+import 'package:article_app/features/article/domain/entities/tag.dart';
+import 'package:article_app/features/user/domain/entities/user.dart';
 import 'package:equatable/equatable.dart';
 
 class Article extends Equatable {
@@ -7,7 +9,9 @@ class Article extends Equatable {
   final String content;
   final DateTime date;
   final int likesCount;
-  final List<String> tags;
+  final List<Tag> tags;
+  final String photoUrl;
+  final User author;
 
   const Article({
     required this.title,
@@ -17,8 +21,20 @@ class Article extends Equatable {
     required this.likesCount,
     required this.tags,
     required this.id,
+    required this.photoUrl,
+    required this.author,
   });
 
   @override
-  List<Object?> get props => [id,title, subtitle, content, date, likesCount, tags];
+  List<Object?> get props => [
+        id,
+        title,
+        subtitle,
+        content,
+        date,
+        likesCount,
+        tags,
+        photoUrl,
+        author,
+      ];
 }

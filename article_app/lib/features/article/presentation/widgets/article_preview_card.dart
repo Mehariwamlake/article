@@ -75,7 +75,7 @@ class ArticlePreviewCard extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          article.tags[0],
+                          "sport",
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 10,

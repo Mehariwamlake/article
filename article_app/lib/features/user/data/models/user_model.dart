@@ -1,64 +1,48 @@
-
+import 'package:article_app/features/article/data/models/article_mapper.dart';
+import 'package:article_app/features/article/data/models/article_model.dart';
 import 'package:article_app/features/user/domain/entities/user.dart';
 
 class UserModel extends User {
-  String id;
-  String userName;
-  String email;
-  String fullName;
-  String? expertise;
-  String? aboutMe;
-  int followersCount;
-  int followingCount;
-  String? profilePicture;
-
-  UserModel(
-      {required this.id,
-      required this.userName,
-      required this.email,
-      required this.fullName,
-      this.expertise,
-      this.aboutMe,
-      this.followersCount = 0,
-      this.followingCount = 0,
-      this.profilePicture})
-      : super(
-          id: id,
-          userName: userName,
-          email: email,
-          fullName: fullName,
-          expertise: expertise,
-          aboutMe: aboutMe,
-          followersCount: followersCount,
-          followingCount: followingCount,
-        );
+  const UserModel({
+    required super.id,
+    required super.fullName,
+    required super.email,
+    required super.expertise,
+    required super.bio,
+    required super.createdAt,
+    required super.image,
+    required super.imageCloudinaryPublicId,
+    required super.articles,
+  });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'],
-      userName: json['userName'],
-      email: json['email'],
       fullName: json['fullName'],
+      email: json['email'],
       expertise: json['expertise'],
-      aboutMe: json['aboutMe'],
-      followersCount: json['followersCount'],
-      followingCount: json['followingCount'],
-      profilePicture: json['profilePicture']
+      bio: json['bio'],
+      createdAt: json['createdAt'],
+      image: json['image'] ?? '',
+      imageCloudinaryPublicId: json['imageCloudinaryPublicId'] ?? '',
+      articles: json['articles'] == null
+          ? const []
+          : json['articles']
+              .map<ArticleModel>((m) => ArticleModel.fromJson(m))
+              .toList(),
     );
   }
-
   Map<String, dynamic> toJson() {
     return {
-      "id": id,
-      "userName": userName,
-      "email": email,
-      "fullName": fullName,
-      "expertise": expertise,
-      "aboutMe": aboutMe,
-      "followersCount": followersCount,
-      "followingCount": followingCount,
-      "profilePicture": profilePicture,
-
+      'id': id,
+      'fullName': fullName,
+      'email': email,
+      'expertise': expertise,
+      'bio': bio,
+      'createdAt': createdAt,
+      'image': image,
+      'imageCloudinaryPublicId': imageCloudinaryPublicId,
+      'articles': articles.map((e) => e.toArticleModel().toJson()).toList(),
     };
   }
 }

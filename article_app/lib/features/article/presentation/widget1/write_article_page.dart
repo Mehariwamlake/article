@@ -5,22 +5,30 @@ import 'package:article_app/features/article/domain/entities/article.dart';
 import 'package:article_app/features/article/presentation/Article_bloc/article_bloc.dart';
 import 'package:article_app/features/article/presentation/Article_bloc/article_event.dart';
 import 'package:article_app/features/article/presentation/Article_bloc/article_state.dart';
+import 'package:article_app/features/article/presentation/Article_bloc/tag_bloc.dart';
+import 'package:article_app/features/article/presentation/Article_bloc/tag_selector_bloc.dart';
+import 'package:article_app/features/article/presentation/widgets/custom_chip.dart';
+import 'package:article_app/features/article/presentation/widgets/custom_text_field.dart';
+import 'package:article_app/features/article/presentation/widgets/image_selector.dart';
+import 'package:article_app/features/article/presentation/widgets/tag_selector.dart';
+import 'package:article_app/features/user/domain/entities/user.dart';
 import 'package:article_app/injection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import '../widgets/content_widget.dart';
 import '../widgets/publish_button.dart';
 import '../widgets/input_field.dart';
 import 'package:intl/intl.dart';
 
-class ArticleFormPage extends StatefulWidget {
-  const ArticleFormPage({super.key});
+class ArticleFormPag extends StatefulWidget {
+  const ArticleFormPag({super.key});
   @override
-  State<ArticleFormPage> createState() => _ArticleFormPageState();
+  State<ArticleFormPag> createState() => _ArticleFormPageState();
 }
 
-class _ArticleFormPageState extends State<ArticleFormPage> {
+class _ArticleFormPageState extends State<ArticleFormPag> {
   @override
   void initState() {
     super.initState();
@@ -30,24 +38,12 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
   TextEditingController controllerTitle = TextEditingController();
   TextEditingController controllerSubTitle = TextEditingController();
   TextEditingController controllerContent = TextEditingController();
-  List chipList = [];
+
+  XFile? image;
 
   DateTime now = DateTime.now();
 
   _ArticleFormPageState();
-
-  void _addChip(String chipText) {
-    setState(() {
-      chipList.add(chipText);
-      controllerTags.clear();
-    });
-  }
-
-  void removeChips(String chipText) {
-    setState(() {
-      chipList.remove(chipText);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,19 +99,22 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                     textEditingController: controllerSubTitle,
                   ),
                   SizedBox(height: screenSize.height * 0.01),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: InputField(
-                          labelText: 'Add Tags',
-                          textEditingController: controllerTags,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.add),
-                      ),
-                    ],
+                  BlocBuilder<TagBloc, TagState>(
+                    builder: (context, state) {
+                      if (state is AllTagsLoadedState) {
+                        return TagSelector(tags: state.tags);
+                      }
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: CustomTextField(
+                              hintText: 'Add Tags',
+                              controller: controllerTags,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                   SizedBox(height: screenSize.height * 0.01),
                   Text(
@@ -123,9 +122,36 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                     textAlign: TextAlign.start,
                     style: TextStyle(fontSize: screenSize.height * 0.02),
                   ),
-                  SizedBox(height: screenSize.height * 0.05),
+                  SizedBox(
+                    height: screenSize.height * 0.05,
+                    child: BlocBuilder<TagSelectorBloc, TagSelectorState>(
+                      builder: (context, state) {
+                        return Wrap(
+                          runSpacing: 10,
+                          spacing: 10,
+                          children: state.tags
+                              .map((tag) => CustomChip(
+                                    label: tag.name,
+                                    onDelete: () {
+                                      context
+                                          .read<TagSelectorBloc>()
+                                          .add(RemoveTagEvent(tag));
+                                    },
+                                  ))
+                              .toList(),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  ImageSelector(
+                    onImageSelected: _selectImage,
+                  ),
+                  const SizedBox(height: 30),
                   const ContentFormField(),
-                  SizedBox(height: screenSize.height * 0.05),
+                  SizedBox(
+                    height: screenSize.height * 0.05,
+                  ),
                   Center(
                     child: SizedBox(
                       width: isPortrait
@@ -134,18 +160,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                       height: screenSize.height * 0.06,
                       child: ElevatedButton(
                         onPressed: () {
-                          Article article = Article(
-                            content: controllerContent.text,
-                            title: controllerTitle.text,
-                            date: now,
-                            id: AutofillHints.telephoneNumber,
-                            likesCount: 12,
-                            subtitle: controllerSubTitle.text,
-                            tags: const ["sport", "foot ball"],
-                          );
-                          context
-                              .read<ArticleBloc>()
-                              .add(PostArticleEvent(article: article));
+                          _publishArticle(context);
                         },
                         style: ElevatedButton.styleFrom(
                           shadowColor: Colors.blue,
@@ -164,5 +179,31 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
         },
       ),
     );
+  }
+
+  void _selectImage(XFile? file) {
+    setState(() {
+      image = file;
+    });
+  }
+
+  void _publishArticle(BuildContext context) {
+    final tagsBloc = context.read<TagSelectorBloc>();
+    if (image != null) {
+      final article = Article(
+        content: controllerContent.text,
+        title: controllerTitle.text,
+        date: now,
+        id: AutofillHints.telephoneNumber,
+        likesCount: 12,
+        subtitle: controllerSubTitle.text,
+        tags: tagsBloc.selectedTags.toList(),
+        photoUrl: image!.path,
+        author: User.empty,
+      );
+      context.read<ArticleBloc>().add(PostArticleEvent(article: article));
+    } else {
+      log("please select an image");
+    }
   }
 }

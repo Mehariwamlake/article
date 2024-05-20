@@ -27,8 +27,44 @@ class ArticleSuccessState extends ArticleState {
 class ArticleFailureState extends ArticleState {
   final String error;
 
-  ArticleFailureState({required this.error});
+  const ArticleFailureState({required this.error});
 
   @override
   List<Object> get props => [error];
+}
+
+class ArticleDeletedState extends ArticleState {
+  final Article article;
+
+  const ArticleDeletedState(this.article);
+
+  @override
+  List<Object> get props => [article];
+}
+
+class ArticleFilteredState extends ArticleState {
+  final List<Article> articles;
+
+  const ArticleFilteredState(this.articles);
+
+  @override
+  List<Object> get props => [articles];
+}
+
+final class ArticleUpdatedState extends ArticleState {
+  final Article article;
+
+  const ArticleUpdatedState(this.article);
+
+  @override
+  List<Object> get props => [article];
+}
+
+final class ArticlePostedState extends ArticleState {
+  final Article article;
+
+  const ArticlePostedState(this.article);
+
+  @override
+  List<Object> get props => [article];
 }
