@@ -1,5 +1,5 @@
-import 'package:article_app/features/user/domain/entites/user_data.dart';
-import 'package:article_app/features/user/domain/user_usecase.dart';
+import 'package:article_app/features/user/domain/entities/user.dart';
+import 'package:article_app/features/user/domain/usecases/get_user.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -15,7 +15,7 @@ void main() {
     getCurrentWeatherUseCase = GetUserData(mockUserRepository);
   });
 
-  const userDetail = UserEntity(
+  const userDetail = User(
       id: '123',
       bio: 'bio',
       createdAt: 'haha',
@@ -23,11 +23,12 @@ void main() {
       expertise: 'expertes',
       fullName: 'mehari',
       image: 'kjal;sdj',
-      imageCloudinaryPublicId: 'image');
+      imageCloudinaryPublicId: 'image',
+      articles: []);
 
   test('should get current user detail from the repository', () async {
     // arrange
-    when(mockUserRepository.getUserData())
+    when(mockUserRepository.getUser())
         .thenAnswer((_) async => const Right(userDetail));
 
     // act

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:article_app/core/errors/exceptions.dart';
-import 'package:article_app/features/article/data/datasource/article_remote.dart';
+import 'package:article_app/features/article/data/datasources/article_remote_data_source.dart';
 import 'package:article_app/features/article/data/models/article_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -18,7 +18,7 @@ void main() {
 
   setUp(() {
     mockClient = MockClient();
-    remoteDataSourceImpl = ArticleRemoteDataSourceImpl(client: mockClient);
+    remoteDataSourceImpl = ArticleRemoteDataSourceImpl(client: mockClient, client1: mockClient);
   });
 
   group(

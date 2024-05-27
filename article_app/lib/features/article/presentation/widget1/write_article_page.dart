@@ -11,8 +11,8 @@ import 'package:article_app/features/article/presentation/widgets/custom_chip.da
 import 'package:article_app/features/article/presentation/widgets/custom_text_field.dart';
 import 'package:article_app/features/article/presentation/widgets/image_selector.dart';
 import 'package:article_app/features/article/presentation/widgets/tag_selector.dart';
-import 'package:article_app/features/user/domain/entities/user.dart';
 import 'package:article_app/injection.dart';
+import 'package:article_app/user/domain/entities/user_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -199,7 +199,7 @@ class _ArticleFormPageState extends State<ArticleFormPag> {
         subtitle: controllerSubTitle.text,
         tags: tagsBloc.selectedTags.toList(),
         photoUrl: image!.path,
-        author: User.empty,
+        author: UserData.empty,
       );
       context.read<ArticleBloc>().add(PostArticleEvent(article: article));
     } else {

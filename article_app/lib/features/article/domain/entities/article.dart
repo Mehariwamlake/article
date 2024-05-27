@@ -1,5 +1,5 @@
 import 'package:article_app/features/article/domain/entities/tag.dart';
-import 'package:article_app/features/user/domain/entities/user.dart';
+import 'package:article_app/user/domain/entities/user_data.dart';
 import 'package:equatable/equatable.dart';
 
 class Article extends Equatable {
@@ -11,7 +11,7 @@ class Article extends Equatable {
   final int likesCount;
   final List<Tag> tags;
   final String photoUrl;
-  final User author;
+  final UserData author;
 
   const Article({
     required this.title,

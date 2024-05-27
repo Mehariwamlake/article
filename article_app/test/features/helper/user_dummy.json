@@ -10,7 +10,8 @@
       "bio": "string",
       "createdAt": "string",
       "image": "string",
-      "imageCloudinaryPublicId": "string"
+      "imageCloudinaryPublicId": "string",
+      "articles": []
     },
     {
       "id": "2",
@@ -20,7 +21,8 @@
       "bio": "string",
       "createdAt": "string",
       "image": "string",
-      "imageCloudinaryPublicId": "string"
+      "imageCloudinaryPublicId": "string",
+      "articles": []
     }
   ]
 }

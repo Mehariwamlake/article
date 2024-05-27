@@ -4,21 +4,23 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i6;
-import 'dart:convert' as _i11;
-import 'dart:typed_data' as _i13;
+import 'dart:convert' as _i12;
+import 'dart:typed_data' as _i14;
 
 import 'package:article_app/core/errors/failures.dart' as _i7;
-import 'package:article_app/features/user/data/data_source/user_remote.dart'
+import 'package:article_app/core/usecases/usecase.dart' as _i11;
+import 'package:article_app/features/user/data/datasources/user_remote_data_source.dart'
     as _i9;
-import 'package:article_app/features/user/data/model/user_model.dart' as _i3;
-import 'package:article_app/features/user/domain/entites/user_data.dart' as _i8;
-import 'package:article_app/features/user/domain/repository/user_repository.dart'
+import 'package:article_app/features/user/data/models/user_model.dart' as _i3;
+import 'package:article_app/features/user/domain/entities/user.dart' as _i8;
+import 'package:article_app/features/user/domain/repositories/user_repository.dart'
     as _i4;
-import 'package:article_app/features/user/domain/user_usecase.dart' as _i10;
+import 'package:article_app/features/user/domain/usecases/get_user.dart'
+    as _i10;
 import 'package:dartz/dartz.dart' as _i2;
 import 'package:http/http.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i12;
+import 'package:mockito/src/dummies.dart' as _i13;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -94,21 +96,64 @@ class MockUserRepository extends _i1.Mock implements _i4.UserRepository {
   }
 
   @override
-  _i6.Future<_i2.Either<_i7.Failure, _i8.UserEntity>> getUserData() =>
+  _i6.Future<_i2.Either<_i7.Failure, _i8.User>> getUser() =>
       (super.noSuchMethod(
         Invocation.method(
-          #getUserData,
+          #getUser,
           [],
         ),
-        returnValue: _i6.Future<_i2.Either<_i7.Failure, _i8.UserEntity>>.value(
-            _FakeEither_0<_i7.Failure, _i8.UserEntity>(
+        returnValue: _i6.Future<_i2.Either<_i7.Failure, _i8.User>>.value(
+            _FakeEither_0<_i7.Failure, _i8.User>(
           this,
           Invocation.method(
-            #getUserData,
+            #getUser,
             [],
           ),
         )),
-      ) as _i6.Future<_i2.Either<_i7.Failure, _i8.UserEntity>>);
+      ) as _i6.Future<_i2.Either<_i7.Failure, _i8.User>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, void>> deleteUserById(String? userId) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #deleteUserById,
+          [userId],
+        ),
+        returnValue: _i6.Future<_i2.Either<_i7.Failure, void>>.value(
+            _FakeEither_0<_i7.Failure, void>(
+          this,
+          Invocation.method(
+            #deleteUserById,
+            [userId],
+          ),
+        )),
+      ) as _i6.Future<_i2.Either<_i7.Failure, void>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, _i8.User>> updateUserPhoto(
+    String? token,
+    String? imagePath,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateUserPhoto,
+          [
+            token,
+            imagePath,
+          ],
+        ),
+        returnValue: _i6.Future<_i2.Either<_i7.Failure, _i8.User>>.value(
+            _FakeEither_0<_i7.Failure, _i8.User>(
+          this,
+          Invocation.method(
+            #updateUserPhoto,
+            [
+              token,
+              imagePath,
+            ],
+          ),
+        )),
+      ) as _i6.Future<_i2.Either<_i7.Failure, _i8.User>>);
 }
 
 /// A class which mocks [UserRemoteDataSource].
@@ -121,19 +166,54 @@ class MockUserRemoteDataSource extends _i1.Mock
   }
 
   @override
-  _i6.Future<_i3.UserModel> getUserData() => (super.noSuchMethod(
+  _i6.Future<_i3.UserModel> getUser() => (super.noSuchMethod(
         Invocation.method(
-          #getUserData,
+          #getUser,
           [],
         ),
         returnValue: _i6.Future<_i3.UserModel>.value(_FakeUserModel_1(
           this,
           Invocation.method(
-            #getUserData,
+            #getUser,
             [],
           ),
         )),
       ) as _i6.Future<_i3.UserModel>);
+
+  @override
+  _i6.Future<_i3.UserModel> updateUserPhoto(
+    String? token,
+    String? imagePath,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateUserPhoto,
+          [
+            token,
+            imagePath,
+          ],
+        ),
+        returnValue: _i6.Future<_i3.UserModel>.value(_FakeUserModel_1(
+          this,
+          Invocation.method(
+            #updateUserPhoto,
+            [
+              token,
+              imagePath,
+            ],
+          ),
+        )),
+      ) as _i6.Future<_i3.UserModel>);
+
+  @override
+  _i6.Future<void> deleteUserById(String? id) => (super.noSuchMethod(
+        Invocation.method(
+          #deleteUserById,
+          [id],
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
 }
 
 /// A class which mocks [GetUserData].
@@ -145,46 +225,30 @@ class MockGetUserData extends _i1.Mock implements _i10.GetUserData {
   }
 
   @override
-  _i4.UserRepository get userRepository => (super.noSuchMethod(
-        Invocation.getter(#userRepository),
+  _i4.UserRepository get repository => (super.noSuchMethod(
+        Invocation.getter(#repository),
         returnValue: _FakeUserRepository_2(
           this,
-          Invocation.getter(#userRepository),
+          Invocation.getter(#repository),
         ),
       ) as _i4.UserRepository);
 
   @override
-  _i6.Future<_i2.Either<_i7.Failure, _i8.UserEntity>> getUserData() =>
+  _i6.Future<_i2.Either<_i7.Failure, _i8.User>> call(_i11.NoParams? params) =>
       (super.noSuchMethod(
         Invocation.method(
-          #getUserData,
-          [],
+          #call,
+          [params],
         ),
-        returnValue: _i6.Future<_i2.Either<_i7.Failure, _i8.UserEntity>>.value(
-            _FakeEither_0<_i7.Failure, _i8.UserEntity>(
+        returnValue: _i6.Future<_i2.Either<_i7.Failure, _i8.User>>.value(
+            _FakeEither_0<_i7.Failure, _i8.User>(
           this,
           Invocation.method(
-            #getUserData,
-            [],
+            #call,
+            [params],
           ),
         )),
-      ) as _i6.Future<_i2.Either<_i7.Failure, _i8.UserEntity>>);
-
-  @override
-  void fold(
-    void Function(dynamic)? param0,
-    void Function(dynamic)? param1,
-  ) =>
-      super.noSuchMethod(
-        Invocation.method(
-          #fold,
-          [
-            param0,
-            param1,
-          ],
-        ),
-        returnValueForMissingStub: null,
-      );
+      ) as _i6.Future<_i2.Either<_i7.Failure, _i8.User>>);
 }
 
 /// A class which mocks [Client].
@@ -242,7 +306,7 @@ class MockHttpClient extends _i1.Mock implements _i5.Client {
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i11.Encoding? encoding,
+    _i12.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -273,7 +337,7 @@ class MockHttpClient extends _i1.Mock implements _i5.Client {
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i11.Encoding? encoding,
+    _i12.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -304,7 +368,7 @@ class MockHttpClient extends _i1.Mock implements _i5.Client {
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i11.Encoding? encoding,
+    _i12.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -335,7 +399,7 @@ class MockHttpClient extends _i1.Mock implements _i5.Client {
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i11.Encoding? encoding,
+    _i12.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -372,7 +436,7 @@ class MockHttpClient extends _i1.Mock implements _i5.Client {
           [url],
           {#headers: headers},
         ),
-        returnValue: _i6.Future<String>.value(_i12.dummyValue<String>(
+        returnValue: _i6.Future<String>.value(_i13.dummyValue<String>(
           this,
           Invocation.method(
             #read,
@@ -383,7 +447,7 @@ class MockHttpClient extends _i1.Mock implements _i5.Client {
       ) as _i6.Future<String>);
 
   @override
-  _i6.Future<_i13.Uint8List> readBytes(
+  _i6.Future<_i14.Uint8List> readBytes(
     Uri? url, {
     Map<String, String>? headers,
   }) =>
@@ -393,8 +457,8 @@ class MockHttpClient extends _i1.Mock implements _i5.Client {
           [url],
           {#headers: headers},
         ),
-        returnValue: _i6.Future<_i13.Uint8List>.value(_i13.Uint8List(0)),
-      ) as _i6.Future<_i13.Uint8List>);
+        returnValue: _i6.Future<_i14.Uint8List>.value(_i14.Uint8List(0)),
+      ) as _i6.Future<_i14.Uint8List>);
 
   @override
   _i6.Future<_i5.StreamedResponse> send(_i5.BaseRequest? request) =>

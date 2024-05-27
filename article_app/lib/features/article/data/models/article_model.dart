@@ -1,8 +1,8 @@
 import 'package:article_app/features/article/data/models/tag_model.dart';
 import 'package:article_app/features/article/domain/entities/article.dart';
 import 'package:article_app/features/article/domain/entities/tag.dart';
-import 'package:article_app/features/user/data/models/user_model.dart';
-import 'package:article_app/features/user/domain/entities/user.dart';
+import 'package:article_app/user/data/models/user_data_model.dart';
+import 'package:article_app/user/domain/entities/user_data.dart';
 
 class ArticleModel extends Article {
   ArticleModel(
@@ -14,7 +14,7 @@ class ArticleModel extends Article {
       required int likesCount,
       required List<Tag> tags,
       required String photoUrl,
-      required User author,
+      required UserData author,
       required})
       : super(
           id: id,
@@ -31,9 +31,9 @@ class ArticleModel extends Article {
   factory ArticleModel.fromJson(Map<String, dynamic> json) {
     final tags =
         json['tags'].map<TagModel>((name) => TagModel(name: name)).toList();
-    UserModel author;
+    UserDataModel author;
     try {
-      author = UserModel(
+      author = UserDataModel(
           id: json['user']['id'],
           fullName: json['user']['fullName'] ?? 'Tamirat Dereje',
           email: json['user']['email'] ?? 'tamiratdereje@gmail.com',
@@ -45,7 +45,7 @@ class ArticleModel extends Article {
               json['user']['imageCloudinaryPublicId'] ?? '',
           articles: const []);
     } catch (e) {
-      author = UserModel(
+      author = UserDataModel(
           id: json['user'],
           fullName: 'Tamirat Dereje',
           email: 'tamiratdereje@gmail.com',
@@ -66,7 +66,8 @@ class ArticleModel extends Article {
       date: DateTime.parse(json['date'] ?? "2023-08-20T20:14:00.295Z"),
       likesCount: json['likesCount'] ?? 0,
       tags: tags,
-      photoUrl: json['image'] ?? 'ljal',
+      photoUrl: json['image'] ??
+          'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwiener.me%2F%3Fe%3D21-stock-photo-sites-that-offer-free-images-for-ww-qb9Q7KcQ&psig=AOvVaw1eR4S7FPOCBA5gjshI2Qkf&ust=1716468484637000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCLjRrsSloYYDFQAAAAAdAAAAABAT',
       author: author,
     );
   }
@@ -81,7 +82,7 @@ class ArticleModel extends Article {
       'likesCount': likesCount,
       'tags': tags.map((tag) => tag.name).toList(),
       'image': photoUrl,
-      'user': (author as UserModel).toJson(),
+      'user': (author as UserDataModel).toJson(),
     };
   }
 }

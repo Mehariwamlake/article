@@ -11,7 +11,7 @@ import 'package:article_app/features/article/presentation/widgets/image_selector
 import 'package:article_app/features/article/presentation/widgets/multiline_text_field.dart';
 import 'package:article_app/features/article/presentation/widgets/snackbar.dart';
 import 'package:article_app/features/article/presentation/widgets/tag_selector.dart';
-import 'package:article_app/features/user/domain/entities/user.dart';
+import 'package:article_app/user/domain/entities/user_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -140,7 +140,7 @@ class _CreateArticleFormState extends State<CreateArticleForm> {
         content: contentFieldController.text,
         photoUrl: image!.path,
         tags: tagsBloc.selectedTags.toList(),
-        author: User.empty,
+        author: UserData.empty,
         date: DateTime.now(),
         likesCount: 12,
       );

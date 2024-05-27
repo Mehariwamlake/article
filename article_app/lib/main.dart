@@ -5,6 +5,7 @@ import 'package:article_app/core/presentation/theme/app_theme.dart';
 import 'package:article_app/features/article/presentation/Article_bloc/article_bloc.dart';
 
 import 'package:article_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:article_app/user/presentation/bloc/user_bloc.dart';
 
 import 'package:flutter/material.dart';
 import 'package:article_app/injection.dart' as di;
@@ -37,6 +38,10 @@ class App extends StatelessWidget {
           BlocProvider<ArticleBloc>(
             create: (_) => di.serviceLocator<ArticleBloc>(),
           ),
+          // BlocProvider<UserBloc>(
+          //   create: (_) =>
+          //       di.serviceLocator<UserBloc>()..add(GetUserEvent(token: token)),
+          // ),
         ],
         child: MaterialApp.router(
           title: 'Blog app',

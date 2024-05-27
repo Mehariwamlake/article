@@ -3,7 +3,7 @@ import 'package:article_app/features/article/presentation/Article_bloc/article_b
 import 'package:article_app/features/article/presentation/Article_bloc/article_event.dart';
 import 'package:article_app/features/article/presentation/Article_bloc/tag_bloc.dart';
 import 'package:article_app/features/article/presentation/Article_bloc/tag_selector_bloc.dart';
-import 'package:article_app/features/user/domain/entities/user.dart';
+import 'package:article_app/user/domain/entities/user_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -175,7 +175,7 @@ class _UpdateArticleFormState extends State<UpdateArticleForm> {
         content: contentFieldController.text,
         photoUrl: image!.path,
         tags: tagsBloc.selectedTags.toList(),
-        author: const User(
+        author: const UserData(
             articles: [],
             bio: '',
             createdAt: '',

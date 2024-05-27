@@ -19,6 +19,17 @@ class ServerException extends Equatable implements Exception {
   List<Object> get props => [message];
 }
 
+class ServerException1 implements Exception {
+  final String message;
+
+  ServerException1(this.message);
+
+  @override
+  String toString() {
+    return "ServerException: $message";
+  }
+}
+
 class NetworkException extends Equatable implements Exception {
   final String message;
 

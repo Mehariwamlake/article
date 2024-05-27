@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:article_app/features/user/data/model/user_model.dart';
-import 'package:article_app/features/user/domain/entites/user_data.dart';
+import 'package:article_app/features/user/data/models/user_model.dart';
+import 'package:article_app/features/user/domain/entities/user.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helper/json_reader.dart';
@@ -16,10 +16,11 @@ void main() {
     createdAt: 'createdAt',
     image: 'image',
     imageCloudinaryPublicId: 'imageCloudinaryPublicId',
+    articles: []
   );
 
   test('should be subclass of user entity', () async {
-    expect(testUserModel, isA<UserEntity>());
+    expect(testUserModel, isA<User>());
   });
 
   test('should return a valid model from json', () async {

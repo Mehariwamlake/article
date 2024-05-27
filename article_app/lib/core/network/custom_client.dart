@@ -19,11 +19,17 @@ class CustomClient {
     _authToken = value;
   }
 
-  Future<http.Response> get(String relativeUrl, {KeyValue? queryParams}) async {
+  Future<http.Response> get(String relativeUrl,
+      {KeyValue? queryParams, Headers headers = const {}}) async {
+    Headers headersWithAuth = {
+      ...headers,
+      if (_authToken != null) 'Authorization': 'Bearer $_authToken'
+    };
+
     return client.get(
-      Uri.parse('$apiBaseUrl$relativeUrl')
-          .replace(queryParameters: queryParams),
-    );
+        Uri.parse('$apiBaseUrl$relativeUrl')
+            .replace(queryParameters: queryParams),
+        headers: headersWithAuth);
   }
 
   Future<http.Response> post(String relativeUrl,

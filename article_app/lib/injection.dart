@@ -28,11 +28,17 @@ import 'package:article_app/features/auth/data/repository/auth_repo.dart';
 import 'package:article_app/features/auth/domain/repository/auth_repository.dart';
 import 'package:article_app/features/auth/domain/usecase/auth_usecase.dart';
 import 'package:article_app/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:article_app/features/user/data/datasources/user_remote_data_source.dart';
-import 'package:article_app/features/user/data/repositories/user_repository_imp.dart';
-import 'package:article_app/features/user/domain/repositories/user_repository.dart';
+import 'package:article_app/user/data/datasources/local/user_local_data_source.dart';
+import 'package:article_app/user/data/datasources/local/user_local_data_source_impl.dart';
+import 'package:article_app/user/data/datasources/user_remote_data_source.dart';
+import 'package:article_app/user/data/datasources/user_remote_data_source_impl.dart';
+import 'package:article_app/user/data/repositories/user_repository_impl.dart';
+import 'package:article_app/user/domain/repositories/user_repository.dart';
+import 'package:article_app/user/domain/usecases/user_usecases/get_user_data_usecase.dart';
+import 'package:article_app/user/domain/usecases/user_usecases/update_user_photo_usecase.dart';
+import 'package:article_app/user/presentation/bloc/profile_page_bloc.dart';
+import 'package:article_app/user/presentation/bloc/user_bloc.dart';
 
-import 'package:article_app/features/user/presentation/bloc/user_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -54,15 +60,19 @@ Future<void> init() async {
   // Repository
 
   serviceLocator.registerLazySingleton<UserRepository>(
-    () => UserRepositoryImpl(
+    () => UserRespositoryImpl(
       remoteDataSource: serviceLocator(),
+      localDataSource: serviceLocator(),
+      networkInfo: serviceLocator(),
     ),
   );
 
   // Data sources
 
   serviceLocator.registerLazySingleton<UserRemoteDataSource>(
-    () => UserRemoteDataSourceImpl(client: serviceLocator()),
+    () => UserRemoteDataSourceImpl(
+      client: serviceLocator(),
+    ),
   );
 
   // Feature-Authentication
@@ -75,6 +85,8 @@ Future<void> init() async {
         deletedArticleById: serviceLocator(),
         filterArticle: serviceLocator(),
       ));
+
+  serviceLocator.registerFactory(() => ProfilePageBloc());
 
   serviceLocator.registerFactory(() => TagSelectorBloc());
 
@@ -93,11 +105,8 @@ Future<void> init() async {
   );
 
   serviceLocator.registerFactory(() => UserBloc(
+        updateUserPhoto: serviceLocator(),
         getUser: serviceLocator(),
-        addUser: serviceLocator(),
-        getUserById: serviceLocator(),
-        editUserById: serviceLocator(),
-        deleteUserById: serviceLocator(),
       ));
 
   serviceLocator.registerFactory(() => BookmarkBloc(
@@ -112,6 +121,8 @@ Future<void> init() async {
       authRepository: serviceLocator(),
     ),
   );
+  serviceLocator.registerLazySingleton(() => GetUserData(serviceLocator()));
+  serviceLocator.registerLazySingleton(() => UpdateUserPhoto(serviceLocator()));
 
   serviceLocator.registerLazySingleton(() => GetAllArticles(serviceLocator()));
   serviceLocator.registerLazySingleton(() => GetArticleById(serviceLocator()));
@@ -125,6 +136,8 @@ Future<void> init() async {
   serviceLocator
       .registerLazySingleton(() => RemoveFromBookmark(serviceLocator()));
   serviceLocator.registerLazySingleton(() => LoadBookmarks(serviceLocator()));
+
+  // serviceLocator.registerLazySingleton(() => DeleteUserById(serviceLocator()));UserLocalDataSource
 
   serviceLocator.registerLazySingleton(
     () => SignUpUseCase(
@@ -167,6 +180,11 @@ Future<void> init() async {
   serviceLocator.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(
       client: serviceLocator(),
+    ),
+  );
+  serviceLocator.registerLazySingleton<UserLocalDataSource>(
+    () => UserLocalDataSourceImpl(
+      sharedPreferences: serviceLocator(),
     ),
   );
 

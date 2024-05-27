@@ -4,6 +4,8 @@ import 'package:article_app/features/article/presentation/Article_bloc/article_b
 import 'package:article_app/features/article/presentation/Article_bloc/article_event.dart';
 import 'package:article_app/features/article/presentation/Article_bloc/article_state.dart';
 import 'package:article_app/features/article/presentation/Article_bloc/bookmark_bloc.dart';
+import 'package:article_app/features/article/presentation/widgets/article_content.dart';
+import 'package:article_app/features/article/presentation/widgets/article_image.dart';
 import 'package:article_app/features/article/presentation/widgets/author_card.dart';
 import 'package:article_app/features/article/presentation/widgets/gradient_scroll_view.dart';
 import 'package:article_app/features/article/presentation/widgets/like_button.dart';
@@ -154,9 +156,15 @@ class ArticleReading extends StatelessWidget {
           SizedBox(height: 30.h),
 
           // Article image
+          ArticleImage(
+            imageUrl: article.photoUrl,
+          ),
+          const SizedBox(height: 15),
 
           // Article content
-
+          ArticleContent(
+            paragraphs: [article.content],
+          ),
           SizedBox(height: 100.h)
         ]),
       ),
